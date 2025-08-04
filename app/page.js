@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function Login() {
   return (
-    <div className="flex h-screen items-center justify-center">
+    <section className="flex h-screen items-center justify-center px-2">
       <div className="w-full max-w-[350px] rounded bg-white px-4 py-6 shadow-md">
         {/* heading */}
         <div className="mb-6 space-y-1 text-center">
@@ -21,12 +21,12 @@ export default function Login() {
         <LoginForm />
 
         <p className="mt-4 text-center text-sm font-medium text-gray-600 capitalize">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link href="/register" className="text-green-700 hover:underline">
-            register account.
+            register account
           </Link>
         </p>
       </div>
-    </div>
+    </section>
   );
 }
