@@ -1,1 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap");
+
 @import "tailwindcss";
+
+/* common css */
+* {
+  font-family: "Source Sans 3", sans-serif;
+}
+
+/* customize sidebar start*/
+/* width */
+.sidebar::-webkit-scrollbar {
+  width: 0;
+}
+
+.sidebar:hover::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Track */
+.sidebar::-webkit-scrollbar-track {
+  background: white;
+}
+
+/* Handle */
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: #018101;
+}
+
+/* Handle on hover */
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background-color: #05691b;
+  cursor: pointer;
+}
+
+/* customize sidebar end */
