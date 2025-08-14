@@ -1,6 +1,8 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import Button from "../Common/Button/Button";
 import FormInput from "../Common/FormInput/FormInput";
 
@@ -14,27 +16,34 @@ const RegisterForm = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
+  const router = useRouter();
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setErrors({});
     try {
-      const res = await fetch("/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/users/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            email,
+            password,
+            confirmPassword,
+          }),
         },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-          confirmPassword,
-        }),
-      });
+      );
       const data = await res.json();
+
       if (data.data) {
-        // redirect to login page after successful registration
+        toast.success("Registration successful!");
+        router.push("/");
       } else {
         setErrors(data);
       }
@@ -63,7 +72,7 @@ const RegisterForm = () => {
           onChange={(e) => setName(e.target.value)}
         />
         <p className="text-sm font-medium text-red-600">
-          {errors?.errors?.password?.msg}
+          {errors?.errors?.name?.msg}
         </p>
       </div>
 
@@ -77,7 +86,7 @@ const RegisterForm = () => {
           onChange={(e) => setEmail(e.target.value)}
         />
         <p className="text-sm font-medium text-red-600">
-          {errors?.errors?.password?.msg}
+          {errors?.errors?.email?.msg}
         </p>
       </div>
 
@@ -187,7 +196,7 @@ const RegisterForm = () => {
           )}
         </span>
         <p className="text-sm font-medium text-red-600">
-          {errors?.errors?.password?.msg}
+          {errors?.errors?.confirmPassword?.msg}
         </p>
       </div>
 

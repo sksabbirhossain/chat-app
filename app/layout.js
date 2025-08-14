@@ -1,4 +1,4 @@
-import { SidebarProvider } from "@/contexts/sidebarContext";
+import Providers from "@/utils/Providers";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -23,7 +23,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} bg-gray-200 antialiased`}
       >
-        <SidebarProvider>{children}</SidebarProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
