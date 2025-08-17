@@ -11,7 +11,7 @@ async function refreshTokenHandler(token) {
   });
   // Check if the response is unauthorized (status code 401)
   if (res.status === 401) {
-    await signOut({ redirect: false, callbackUrl: "/login" });
+    await signOut({ redirect: false, callbackUrl: "/" });
     return null;
   }
 
@@ -24,7 +24,7 @@ async function refreshTokenHandler(token) {
       expiresIn: response.expiresIn,
     };
   } else {
-    await signOut({ redirect: false, callbackUrl: "/login" });
+    await signOut({ redirect: false, callbackUrl: "/" });
     return null;
   }
 }
@@ -34,8 +34,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     //login
     CredentialsProvider({
-      id: "user-login", // Unique ID for this provider
-      name: "User",
       async authorize(credentials) {
         try {
           const res = await fetch(
