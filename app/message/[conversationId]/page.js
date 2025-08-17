@@ -218,7 +218,10 @@ const Conversation = () => {
       </div>
 
       {/* Messages Area */}
-      <div className="messages flex flex-1 flex-col-reverse gap-2 overflow-y-auto bg-gray-50 p-4">
+      <div
+        className="flex flex-1 flex-col-reverse gap-2 overflow-y-auto bg-gray-50 p-4"
+        id="messages"
+      >
         {/* if message not found */}
         {messages?.length === 0 && (
           <p className="text-center">no messages found!</p>

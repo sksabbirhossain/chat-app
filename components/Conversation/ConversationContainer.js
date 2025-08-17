@@ -1,6 +1,18 @@
+import { signOut } from "next-auth/react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 import ConversationItem from "./ConversationItem";
 
 const ConversationContainer = () => {
+  const router = useRouter();
+
+  const logout = async () => {
+    const data = await signOut();
+    toast.success("Logout successful");
+    router.push("/");
+  };
+
   return (
     <div className="sidebar h-full w-full overflow-y-auto">
       {/* Search Box */}
@@ -68,6 +80,25 @@ const ConversationContainer = () => {
           <ConversationItem />
           <ConversationItem />
         </ul>
+      </div>
+
+      {/* logout user */}
+      <div
+        className="shadow-3xl fixed bottom-0 flex h-[65px] w-full cursor-pointer items-center border-t border-gray-300 bg-[#ffffff] px-4"
+        onClick={logout}
+      >
+        <div className="flex items-center gap-2">
+          <Image
+            src={"/default.jpg"}
+            alt={"profile"}
+            className="h-10 w-10 rounded-full object-cover p-0.5 ring-1 ring-purple-600"
+            width={100}
+            height={100}
+          />
+          <h2 className="text-lg font-semibold capitalize">
+            Sk Sabbir hossain
+          </h2>
+        </div>
       </div>
     </div>
   );
