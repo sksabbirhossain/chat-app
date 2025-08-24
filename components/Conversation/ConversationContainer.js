@@ -1,12 +1,67 @@
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import ConversationItem from "./ConversationItem";
 
 const ConversationContainer = () => {
+  const [conversations, setConversations] = useState([]);
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const { data: session } = useSession();
+  const userInfo = session?.user;
+
   const router = useRouter();
 
+  // Fetch conversation for current user
+  useEffect(() => {
+    const getConversations = async () => {
+      setLoading(true);
+      setErrors({});
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/conversations/${userInfo?._id}`,
+          {
+            headers: {
+              "content-type": "application/json",
+              Authorization: `Bearer ${session?.user?.accessToken}`,
+            },
+          },
+        );
+
+        const data = await res.json();
+
+        if (data?.data) {
+          setConversations(data.data);
+          setLoading(false);
+          setErrors({});
+        } else {
+          setLoading(false);
+          setErrors({
+            errors: {
+              common: {
+                msg: "Interanal server error!",
+              },
+            },
+          });
+        }
+      } catch (err) {
+        setLoading(false);
+        setErrors({
+          errors: {
+            common: {
+              msg: "Server error occurred!",
+            },
+          },
+        });
+      }
+    };
+
+    if (userInfo?._id) getConversations();
+  }, [userInfo, session]);
+
+  //logout user
   const logout = async () => {
     const data = await signOut();
     toast.success("Logout successful");
@@ -60,25 +115,27 @@ const ConversationContainer = () => {
       {/* Conversation List */}
       <div className="pt-[65px]">
         <ul className="space-y-2 px-0.5 font-medium">
-          <ConversationItem />
-          <ConversationItem />
-          <ConversationItem />
-          <ConversationItem />
-          <ConversationItem />
-          <ConversationItem />
-          <ConversationItem />
-          <ConversationItem />
-          <ConversationItem />
-          <ConversationItem />
-          <ConversationItem />
-          <ConversationItem />
-          <ConversationItem />
-          <ConversationItem />
-          <ConversationItem />
-          <ConversationItem />
-          <ConversationItem />
-          <ConversationItem />
-          <ConversationItem />
+          {/* showing loading */}
+          {loading && (
+            <p className="p-4 text-center text-lg font-semibold text-green-600">
+              Loading...
+            </p>
+          )}
+          {/* showing error */}
+          {errors?.errors?.common && (
+            <p className="p-4 text-center text-sm font-semibold text-red-600">
+              {errors.errors.common.msg}
+            </p>
+          )}
+
+          {/* show all conversations */}
+          {conversations?.map((conversation) => (
+            <ConversationItem
+              key={conversation._id}
+              conversation={conversation}
+              currentUserId={userInfo?._id}
+            />
+          ))}
         </ul>
       </div>
 
@@ -95,9 +152,7 @@ const ConversationContainer = () => {
             width={100}
             height={100}
           />
-          <h2 className="text-lg font-semibold capitalize">
-            Sk Sabbir hossain
-          </h2>
+          <h2 className="text-md font-semibold capitalize">{userInfo?.name}</h2>
         </div>
       </div>
     </div>

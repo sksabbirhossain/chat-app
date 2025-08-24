@@ -1,16 +1,12 @@
+import { formatDistanceToNow } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
-const ConversationItem = () => {
-  const conversation = {
-    _id: "12345",
-    lastMessage: "Hello, how are you?",
-    lastMessageAt: "2023-10-01T12:00:00Z",
-  };
-  const partner = {
-    name: "John Doe",
-  };
+const ConversationItem = ({ conversation, currentUserId }) => {
+  // Find the conversation partner
+  const partner = conversation?.participants?.find(
+    (member) => member._id !== currentUserId,
+  );
   return (
     <li
       key={conversation?._id}
@@ -40,7 +36,13 @@ const ConversationItem = () => {
         </div>
 
         {/* Timestamp */}
-        <span className="text-[11px] text-gray-400">12:00 PM</span>
+        <span className="text-[11px] text-gray-400">
+          {conversation?.createdAt
+            ? formatDistanceToNow(new Date(conversation?.createdAt), {
+                addSuffix: true,
+              })
+            : ""}
+        </span>
       </Link>
     </li>
   );
