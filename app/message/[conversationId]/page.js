@@ -1,183 +1,77 @@
 "use client";
 import SendMessage from "@/components/Message/SendMessage";
 import useSidebarMenu from "@/contexts/sidebarContext";
-import { format } from "date-fns";
+import { format, formatDistanceToNow, isToday } from "date-fns";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const Conversation = () => {
   const [messages, setMessages] = useState([]);
-  const { handleOpenSidebar } = useSidebarMenu();
-  const conversationId = "12345"; // Example conversation ID
-  const userInfo = { _id: "user123", name: "John Doe", profilePic: "" }; // Example user info
-  const receiver = { _id: "receiver123", name: "Jane Smith", profilePic: "" }; // Example receiver info
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
+  // get conversation id from url
+  const params = useParams();
+  const { conversationId } = params;
+
+  // auth session
+  const { data: session } = useSession();
+  const userInfo = session?.user;
+
+  // sidebar menu context
+  const { handleOpenSidebar } = useSidebarMenu();
+
+  // find the receiver
+  const receiver = messages[0]?.receiver;
+
+  //get all messages for this conversation
   useEffect(() => {
-    setMessages([
-      {
-        _id: "msg1",
-        sender: { _id: "user123", name: "John Doe" },
-        text: "Hello!",
-        files: [],
-        createdAt: new Date("2025-08-01T10:00:00Z"),
-      },
-      {
-        _id: "msg2",
-        sender: { _id: "user456", name: "Jane Smith" },
-        text: "Hi there!",
-        files: [],
-        createdAt: new Date("2025-08-01T10:05:00Z"),
-      },
-      {
-        _id: "msg3",
-        sender: { _id: "user123", name: "John Doe" },
-        text: "How are you?",
-        files: [],
-        createdAt: new Date("2025-08-01T10:10:00Z"),
-      },
-      {
-        _id: "msg4",
-        sender: { _id: "user456", name: "Jane Smith" },
-        text: "I'm good, thanks! How about you?",
-        files: [],
-        createdAt: new Date("2025-08-01T10:12:00Z"),
-      },
-      {
-        _id: "msg5",
-        sender: { _id: "user123", name: "John Doe" },
-        text: "Doing well, working on a new project.",
-        files: [],
-        createdAt: new Date("2025-08-01T10:15:00Z"),
-      },
-      {
-        _id: "msg6",
-        sender: { _id: "user456", name: "Jane Smith" },
-        text: "That's great! Let me know if you want help.",
-        files: [],
-        createdAt: new Date("2025-08-01T10:18:00Z"),
-      },
-      {
-        _id: "msg7",
-        sender: { _id: "user123", name: "John Doe" },
-        text: "Sure, will do! Thanks.",
-        files: [],
-        createdAt: new Date("2025-08-01T10:20:00Z"),
-      },
-      {
-        _id: "msg8",
-        sender: { _id: "user456", name: "Jane Smith" },
-        text: "No problem!",
-        files: [],
-        createdAt: new Date("2025-08-01T10:22:00Z"),
-      },
-      {
-        _id: "msg9",
-        sender: { _id: "user123", name: "John Doe" },
-        text: "By the way, did you see the latest update?",
-        files: [],
-        createdAt: new Date("2025-08-01T10:25:00Z"),
-      },
-      {
-        _id: "msg10",
-        sender: { _id: "user456", name: "Jane Smith" },
-        text: "Yes, looks promising!",
-        files: [],
-        createdAt: new Date("2025-08-01T10:27:00Z"),
-      },
-      {
-        _id: "msg11",
-        sender: { _id: "user123", name: "John Doe" },
-        text: "I think it will improve our workflow.",
-        files: [
-          { url: "/files/report-aug-01.pdf", name: "Report August 2025.pdf" },
-        ],
-        createdAt: new Date("2025-08-01T10:30:00Z"),
-      },
-      {
-        _id: "msg12",
-        sender: { _id: "user456", name: "Jane Smith" },
-        text: "Absolutely. Can't wait to try it out.",
-        files: [],
-        createdAt: new Date("2025-08-01T10:32:00Z"),
-      },
-      {
-        _id: "msg13",
-        sender: { _id: "user123", name: "John Doe" },
-        text: "Let's catch up later and discuss the details.",
-        files: [],
-        createdAt: new Date("2025-08-01T10:35:00Z"),
-      },
-      {
-        _id: "msg14",
-        sender: { _id: "user456", name: "Jane Smith" },
-        text: "Sounds good! Talk soon.",
-        files: [
-          { url: "/files/report-aug-01.pdf", name: "Report August 2025.pdf" },
-        ],
-        createdAt: new Date("2025-08-01T10:37:00Z"),
-      },
-      {
-        _id: "msg15",
-        sender: { _id: "user123", name: "John Doe" },
-        text: "Bye for now.",
-        files: [
-          { url: "/files/report-aug-01.pdf", name: "Report August 2025.pdf" },
-        ],
-        createdAt: new Date("2025-08-01T10:40:00Z"),
-      },
-      {
-        _id: "msg16",
-        sender: { _id: "user456", name: "Jane Smith" },
-        text: "Bye!",
-        files: [],
-        createdAt: new Date("2025-08-01T10:42:00Z"),
-      },
-      {
-        _id: "msg17",
-        sender: { _id: "user123", name: "John Doe" },
-        text: "Oh, one more thing, I added some docs to the repo.",
-        files: [],
-        createdAt: new Date("2025-08-01T10:45:00Z"),
-      },
-      {
-        _id: "msg18",
-        sender: { _id: "user456", name: "Jane Smith" },
-        text: "Thanks for the update! I'll check it out.",
-        files: [
-          { url: "/files/report-aug-01.pdf", name: "Report August 2025.pdf" },
-        ],
-        createdAt: new Date("2025-08-01T10:47:00Z"),
-      },
-      {
-        _id: "msg19",
-        sender: { _id: "user123", name: "John Doe" },
-        text: "Great! Let me know if you have questions.",
-        files: [],
-        createdAt: new Date("2025-08-01T10:50:00Z"),
-      },
-      {
-        _id: "msg20",
-        sender: { _id: "user456", name: "Jane Smith" },
-        text: "Will do. Thanks!",
-        files: [],
-        createdAt: new Date("2025-08-01T10:52:00Z"),
-      },
-      {
-        _id: "msg20",
-        sender: { _id: "user456", name: "Jane Smith" },
-        text: "Will do. Thanks!",
-        files: [],
-        createdAt: new Date("2025-08-01T10:53:00Z"),
-      },
-      {
-        _id: "msg19",
-        sender: { _id: "user123", name: "John Doe" },
-        text: "Great! Let me know if you have questions.",
-        files: [],
-        createdAt: new Date("2025-08-01T10:55:00Z"),
-      },
-    ]);
-  }, []);
+    const fetchMessages = async () => {
+      setLoading(true);
+      setErrors({});
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/messages/${conversationId}`,
+          {
+            headers: {
+              "content-type": "application/json",
+              Authorization: `Bearer ${session?.user?.accessToken}`,
+            },
+          },
+        );
+
+        const data = await res.json();
+
+        if (data?.data) {
+          setMessages(data.data);
+          setLoading(false);
+          setErrors({});
+        } else {
+          setLoading(false);
+          setErrors({
+            errors: {
+              common: {
+                msg: "Interanal server error!",
+              },
+            },
+          });
+        }
+      } catch (err) {
+        setLoading(false);
+        setErrors({
+          errors: {
+            common: {
+              msg: "Server error occurred!",
+            },
+          },
+        });
+      }
+    };
+
+    if (conversationId) fetchMessages();
+  }, [conversationId, session]);
 
   return (
     <div className="flex h-screen flex-col overflow-hidden rounded-lg bg-white sm:h-[95vh]">
@@ -222,8 +116,18 @@ const Conversation = () => {
         className="flex flex-1 flex-col-reverse gap-2 overflow-y-auto bg-gray-50 p-4"
         id="messages"
       >
+        {/* showing loading */}
+        {loading && <p className="text-center">Loading...</p>}
+
+        {/* showing error */}
+        {errors?.errors?.common && (
+          <p className="text-center text-sm font-semibold text-red-600">
+            {errors.errors.common.msg}
+          </p>
+        )}
+
         {/* if message not found */}
-        {messages?.length === 0 && (
+        {loading && messages?.length === 0 && (
           <p className="text-center">no messages found!</p>
         )}
 
@@ -254,8 +158,9 @@ const Conversation = () => {
                         <p
                           className={`text-right text-xs ${isMe ? "text-gray-200" : "text-gray-500"}`}
                         >
-                          {msg?.createdAt &&
-                            format(new Date(msg?.createdAt), "p")}
+                          {msg?.createdAt && isToday(msg?.createdAt)
+                            ? format(msg?.createdAt, "hh:mm a")
+                            : format(msg?.createdAt, "MMM d YYY, hh:mm a")}
                         </p>
                       </div>
                     </>
