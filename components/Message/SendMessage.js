@@ -1,4 +1,5 @@
 "use client";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -10,6 +11,9 @@ const SendMessage = ({
 }) => {
   const [text, setText] = useState("");
   const [files, setFiles] = useState([]);
+
+  // auth session
+  const { data: session } = useSession();
 
   // send message handler
   const handleSendMessage = async (e) => {
@@ -27,26 +31,36 @@ const SendMessage = ({
     });
 
     try {
-      const res = await fetch("/api/messages", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/messages`, {
         method: "POST",
-        body: formData,
+        body: JSON.stringify({
+          conversationId,
+          sender: currentUserId,
+          receiver: receiverId ? receiverId : receiverId?._id,
+          text,
+          files,
+        }),
         headers: {
-          Accept: "application/json",
-          "Content-Type": "multipart/form-data",
+          // Accept: "application/json",
+          // "Content-Type": "multipart/form-data",
+          "content-type": "application/json",
+          Authorization: `Bearer ${session?.user?.accessToken}`,
         },
       });
 
-      const newMsg = res?.data?.data;
+      const data = await res.json();
+
+      const newMsg = data?.data;
 
       setMessages((prev) => [...prev, newMsg]);
       setText("");
       setFiles([]);
 
       // Emit message to receiver
-      socket.emit("newMessage", {
-        message: res.data.data,
-        receiverId,
-      });
+      // socket.emit("newMessage", {
+      //   message: res.data.data,
+      //   receiverId,
+      // });
 
       // Emit message for conversation
       //   socket.emit("conversation", {

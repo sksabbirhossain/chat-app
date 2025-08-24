@@ -1,7 +1,7 @@
 "use client";
 import SendMessage from "@/components/Message/SendMessage";
 import useSidebarMenu from "@/contexts/sidebarContext";
-import { format, formatDistanceToNow, isToday } from "date-fns";
+import { format, isToday } from "date-fns";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
@@ -160,7 +160,7 @@ const Conversation = () => {
                         >
                           {msg?.createdAt && isToday(msg?.createdAt)
                             ? format(msg?.createdAt, "hh:mm a")
-                            : format(msg?.createdAt, "MMM d YYY, hh:mm a")}
+                            : format(msg?.createdAt, "MMM d yyy, hh:mm a")}
                         </p>
                       </div>
                     </>
@@ -199,7 +199,7 @@ const Conversation = () => {
           setMessages={setMessages}
           conversationId={conversationId}
           currentUserId={userInfo?._id}
-          receiverId={receiver?._id}
+          receiverId={receiver}
         />
       </div>
     </div>
