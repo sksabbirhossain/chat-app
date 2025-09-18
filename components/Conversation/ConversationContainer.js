@@ -1,16 +1,27 @@
+import { getSearchConversations } from "@/actions/conversation/conversationActions";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import ConversationItem from "./ConversationItem";
 import SearchItem from "./SearchItem";
+
+// Utility debounce function
+function debounce(func, delay) {
+  let timer;
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => func.apply(this, args), delay);
+  };
+}
 
 const ConversationContainer = () => {
   const [conversations, setConversations] = useState([]);
   const [searchConversations, setSearchConversations] = useState([]);
   const [query, setQuery] = useState("");
   const [errors, setErrors] = useState({});
+  const [searchErrors, setSearchErrors] = useState({});
   const [loading, setLoading] = useState(false);
 
   // get login user session
@@ -67,10 +78,44 @@ const ConversationContainer = () => {
   }, [userInfo, session]);
 
   //get search conversatons handler
-  const searchConversationsHandler = async (e) => {
+  const fetchConversations = async (search) => {
+    setSearchErrors({});
+    if (!search.trim()) {
+      setSearchConversations([]); // clear if input empty
+      return;
+    }
+
     try {
-    } catch (err) {}
+      const data = await getSearchConversations(search);
+
+      if (data?.data) {
+        setSearchConversations(data?.data);
+      } else {
+        setSearchErrors(data);
+      }
+    } catch (err) {
+      setSearchErrors({
+        errors: {
+          common: {
+            msg: err.massage,
+          },
+        },
+      });
+    }
   };
+
+  // Debounced version of fetchConversations
+  const getConversationHandler = useCallback(
+    debounce((value) => {
+      fetchConversations(value);
+    }, 500), // 500ms debounce
+    [],
+  );
+
+  // Trigger debounce whenever query changes
+  useEffect(() => {
+    getConversationHandler(query);
+  }, [query, getConversationHandler]);
 
   //logout user
   const logout = async () => {
@@ -118,7 +163,7 @@ const ConversationContainer = () => {
                 <SearchItem
                   // conversation={conversation}
                   key={conversation?._id}
-                  conversation={conversation.name}
+                  conversation={conversation}
                   // senderId={conversationInfo?._id}
                   // setSearchConversations={setSearchConversations}
                   // setQuery={setQuery}

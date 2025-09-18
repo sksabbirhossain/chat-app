@@ -1,3 +1,4 @@
+import { formatDistanceToNow } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -15,11 +16,11 @@ const SearchItem = ({ conversation }) => {
         {/* Profile picture */}
         <Image
           src={
-            conversation?.partner?.profilePic
-              ? `${conversation?.partner.profilePic}`
+            conversation?.profilePic
+              ? `${conversation?.profilePic}`
               : "/default.jpg"
           }
-          alt={conversation?.partner?.name}
+          alt={conversation?.name}
           className="h-11 w-11 rounded-full object-cover p-0.5 ring-1 ring-green-600"
           width={100}
           height={100}
@@ -28,7 +29,7 @@ const SearchItem = ({ conversation }) => {
         {/* Name + Last Message */}
         <div className="min-w-0 flex-1">
           <p className="truncate text-[15px] font-semibold capitalize">
-            {conversation?.partner?.name}
+            {conversation?.name}
           </p>
           <p className="truncate text-sm text-gray-500">
             {conversation?.lastMessage || "No messages yet"}
@@ -36,13 +37,13 @@ const SearchItem = ({ conversation }) => {
         </div>
 
         {/* Timestamp */}
-        <span className="text-[11px] text-gray-400">
+        {/* <span className="text-[11px] text-gray-400">
           {conversation?.updatedAt
             ? formatDistanceToNow(new Date(conversation?.updatedAt), {
                 addSuffix: true,
               })
             : ""}
-        </span>
+        </span> */}
       </Link>
     </li>
   );
