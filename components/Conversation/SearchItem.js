@@ -1,12 +1,8 @@
-import { formatDistanceToNow } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
+import React from "react";
 
-const ConversationItem = ({ conversation, currentUserId }) => {
-  // Find the conversation partner
-  const partner = conversation?.participants?.find(
-    (member) => member._id !== currentUserId,
-  );
+const SearchItem = ({ conversation }) => {
   return (
     <li
       key={conversation?._id}
@@ -18,8 +14,12 @@ const ConversationItem = ({ conversation, currentUserId }) => {
       >
         {/* Profile picture */}
         <Image
-          src={partner?.profilePic ? `${partner.profilePic}` : "/default.jpg"}
-          alt={partner?.name}
+          src={
+            conversation?.partner?.profilePic
+              ? `${conversation?.partner.profilePic}`
+              : "/default.jpg"
+          }
+          alt={conversation?.partner?.name}
           className="h-11 w-11 rounded-full object-cover p-0.5 ring-1 ring-green-600"
           width={100}
           height={100}
@@ -28,7 +28,7 @@ const ConversationItem = ({ conversation, currentUserId }) => {
         {/* Name + Last Message */}
         <div className="min-w-0 flex-1">
           <p className="truncate text-[15px] font-semibold capitalize">
-            {partner?.name}
+            {conversation?.partner?.name}
           </p>
           <p className="truncate text-sm text-gray-500">
             {conversation?.lastMessage || "No messages yet"}
@@ -48,4 +48,4 @@ const ConversationItem = ({ conversation, currentUserId }) => {
   );
 };
 
-export default ConversationItem;
+export default SearchItem;

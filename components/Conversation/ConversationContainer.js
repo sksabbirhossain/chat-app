@@ -4,11 +4,16 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import ConversationItem from "./ConversationItem";
+import SearchItem from "./SearchItem";
 
 const ConversationContainer = () => {
   const [conversations, setConversations] = useState([]);
+  const [searchConversations, setSearchConversations] = useState([]);
+  const [query, setQuery] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+
+  // get login user session
   const { data: session } = useSession();
   const userInfo = session?.user;
 
@@ -61,6 +66,12 @@ const ConversationContainer = () => {
     if (userInfo?._id) getConversations();
   }, [userInfo, session]);
 
+  //get search conversatons handler
+  const searchConversationsHandler = async (e) => {
+    try {
+    } catch (err) {}
+  };
+
   //logout user
   const logout = async () => {
     const data = await signOut();
@@ -70,14 +81,15 @@ const ConversationContainer = () => {
 
   return (
     <div className="sidebar h-full w-full overflow-y-auto">
-      {/* Search Box */}
+      {/* Search conversations */}
       <div className="fixed top-0 left-0 z-10 w-full max-w-md bg-white">
+        {/* search input */}
         <div className="relative border-b border-gray-200">
           <input
             type="text"
             placeholder="Search a conversation..."
-            // name={query}
-            // onChange={(e) => setQuery(e.target.value)}
+            name={query}
+            onChange={(e) => setQuery(e.target.value)}
             className="w-full py-[18px] pr-4 pl-10 shadow-green-500/20 focus:shadow-sm focus:outline-none"
           />
           <svg
@@ -97,20 +109,25 @@ const ConversationContainer = () => {
             />
           </svg>
         </div>
-      </div>
 
-      {/* showing search items */}
-      {/* <ul>
-        {searchUsers?.map((user) => (
-          <SearchItem
-            user={user}
-            key={user?._id}
-            senderId={userInfo?._id}
-            setSearchUsers={setSearchUsers}
-            setQuery={setQuery}
-          />
-        ))}
-      </ul> */}
+        {/* showing search items */}
+        {searchConversations && (
+          <div className="h-full w-full">
+            <ul className="h-full max-h-[350px] w-full space-y-1 overflow-y-auto border-b border-gray-300 bg-gray-100 px-1 shadow-md">
+              {searchConversations?.map((conversation) => (
+                <SearchItem
+                  // conversation={conversation}
+                  key={conversation?._id}
+                  conversation={conversation.name}
+                  // senderId={conversationInfo?._id}
+                  // setSearchConversations={setSearchConversations}
+                  // setQuery={setQuery}
+                />
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
 
       {/* Conversation List */}
       <div className="pt-[65px]">
