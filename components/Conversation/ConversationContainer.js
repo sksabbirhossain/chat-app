@@ -164,9 +164,8 @@ const ConversationContainer = () => {
                   // conversation={conversation}
                   key={conversation?._id}
                   conversation={conversation}
-                  // senderId={conversationInfo?._id}
-                  // setSearchConversations={setSearchConversations}
-                  // setQuery={setQuery}
+                  setSearchConversations={setSearchConversations}
+                  setQuery={setQuery}
                 />
               ))}
             </ul>

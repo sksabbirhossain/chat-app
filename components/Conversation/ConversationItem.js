@@ -1,4 +1,4 @@
-import { formatDistanceToNow } from "date-fns";
+import getTime from "@/utils/getTime";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -37,11 +37,7 @@ const ConversationItem = ({ conversation, currentUserId }) => {
 
         {/* Timestamp */}
         <span className="text-[11px] text-gray-400">
-          {conversation?.updatedAt
-            ? formatDistanceToNow(new Date(conversation?.updatedAt), {
-                addSuffix: true,
-              })
-            : ""}
+          {conversation?.updatedAt ? getTime(conversation?.updatedAt) : ""}
         </span>
       </Link>
     </li>
