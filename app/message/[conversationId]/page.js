@@ -1,5 +1,6 @@
 "use client";
 import SendMessage from "@/components/Message/SendMessage";
+import { socket } from "@/configs/socket";
 import useSidebarMenu from "@/contexts/sidebarContext";
 import { format, isToday } from "date-fns";
 import { useSession } from "next-auth/react";
@@ -7,8 +8,9 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const Conversation = () => {
+const ChatPage = () => {
   const [messages, setMessages] = useState([]);
+  const [receiver, setReceiver] = useState({});
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -23,8 +25,18 @@ const Conversation = () => {
   // sidebar menu context
   const { handleOpenSidebar } = useSidebarMenu();
 
-  // find the receiver
-  const receiver = messages[0]?.receiver;
+  // 💬 listen for new messages
+  useEffect(() => {
+    const handleReceiveMessage = (data) => {
+      setMessages((prev) => [...prev, data]);
+    };
+
+    socket.on("receiveMessage", handleReceiveMessage);
+
+    return () => {
+      socket.off("receiveMessage", handleReceiveMessage);
+    };
+  }, []);
 
   //get all messages for this conversation
   useEffect(() => {
@@ -45,6 +57,15 @@ const Conversation = () => {
         const data = await res.json();
 
         if (data?.data) {
+          // find the receiver info from messages
+          const receiverInfo =
+            data.data[0]?.sender?._id === userInfo?._id
+              ? data.data[0]?.receiver
+              : data.data[0]?.sender;
+
+          setReceiver(receiverInfo);
+
+          // set messages
           setMessages(data.data);
           setLoading(false);
           setErrors({});
@@ -71,11 +92,11 @@ const Conversation = () => {
     };
 
     if (conversationId) fetchMessages();
-  }, [conversationId, session]);
+  }, [conversationId, session, userInfo]);
 
   return (
     <div className="flex h-screen flex-col overflow-hidden rounded-lg bg-white sm:h-[95vh]">
-      {/* Header */}
+      {/* Header / showing message receiver informations */}
       <div className="flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3 shadow-md">
         <div className="flex items-center gap-3">
           <Image
@@ -116,20 +137,22 @@ const Conversation = () => {
         className="flex flex-1 flex-col-reverse gap-2 overflow-y-auto bg-gray-50 p-4"
         id="messages"
       >
-        {/* showing loading */}
-        {loading && <p className="text-center">Loading...</p>}
+        <>
+          {/* showing loading */}
+          {loading && <p className="text-center">Loading...</p>}
 
-        {/* showing error */}
-        {errors?.errors?.common && (
-          <p className="text-center text-sm font-semibold text-red-600">
-            {errors.errors.common.msg}
-          </p>
-        )}
+          {/* showing error */}
+          {errors?.errors?.common && (
+            <p className="text-center text-sm font-semibold text-red-600">
+              {errors.errors.common.msg}
+            </p>
+          )}
 
-        {/* if message not found */}
-        {loading && messages?.length === 0 && (
-          <p className="text-center">no messages found!</p>
-        )}
+          {/* if message not found */}
+          {loading && messages?.length === 0 && (
+            <p className="text-center">no messages found!</p>
+          )}
+        </>
 
         {/* loop all the messages */}
         {messages
@@ -145,29 +168,27 @@ const Conversation = () => {
                 <div className="max-w-xs">
                   {/* showing text messages */}
                   {msg?.text !== "" && (
-                    <>
-                      <div
-                        className={`max-w-xs rounded-lg px-2 py-1 text-[15px] ${
-                          isMe
-                            ? "bg-green-700 text-white"
-                            : "bg-gray-200 text-gray-700"
-                        }`}
+                    <div
+                      className={`max-w-xs rounded-lg px-2 py-1 text-[15px] ${
+                        isMe
+                          ? "bg-green-700 text-white"
+                          : "bg-gray-200 text-gray-700"
+                      }`}
+                    >
+                      <p>{msg?.text}</p>
+                      {/* showing message time */}
+                      <p
+                        className={`text-right text-xs ${isMe ? "text-gray-200" : "text-gray-500"}`}
                       >
-                        <p>{msg?.text}</p>
-                        {/* showing message time */}
-                        <p
-                          className={`text-right text-xs ${isMe ? "text-gray-200" : "text-gray-500"}`}
-                        >
-                          {msg?.createdAt && isToday(msg?.createdAt)
-                            ? format(msg?.createdAt, "hh:mm a")
-                            : format(msg?.createdAt, "MMM d yyy, hh:mm a")}
-                        </p>
-                      </div>
-                    </>
+                        {msg?.createdAt && isToday(msg?.createdAt)
+                          ? format(msg?.createdAt, "hh:mm a")
+                          : format(msg?.createdAt, "MMM d yyy, hh:mm a")}
+                      </p>
+                    </div>
                   )}
 
                   {/* showing files */}
-                  {msg?.files.length > 0 &&
+                  {msg?.files?.length > 0 &&
                     msg?.files?.map((file, i) => (
                       <div className="pt-1" key={i}>
                         <Image
@@ -206,4 +227,4 @@ const Conversation = () => {
   );
 };
 
-export default Conversation;
+export default ChatPage;

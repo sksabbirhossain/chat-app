@@ -1,4 +1,5 @@
 "use client";
+import { socket } from "@/configs/socket";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
@@ -19,11 +20,11 @@ const SendMessage = ({
   const handleSendMessage = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("conversationId", conversationId);
-    formData.append("sender", currentUserId);
-    formData.append("receiver", receiverId);
-    formData.append("text", text);
+    // const formData = new FormData();
+    // formData.append("conversationId", conversationId);
+    // formData.append("sender", currentUserId);
+    // formData.append("receiver", receiverId);
+    // formData.append("text", text);
 
     // Append all selected files
     files.forEach((file) => {
@@ -36,7 +37,7 @@ const SendMessage = ({
         body: JSON.stringify({
           conversationId,
           sender: currentUserId,
-          receiver: receiverId ? receiverId : receiverId?._id,
+          receiver: !receiverId?._id ? receiverId : receiverId?._id,
           text,
           files,
         }),
@@ -52,29 +53,17 @@ const SendMessage = ({
 
       const newMsg = data?.data;
 
-      setMessages((prev) => [...prev, newMsg]);
-      setText("");
-      setFiles([]);
+      if (newMsg?._id) {
+        setMessages((prev) => [...prev, newMsg]);
+        setText("");
+        setFiles([]);
 
-      // Emit message to receiver
-      // socket.emit("newMessage", {
-      //   message: res.data.data,
-      //   receiverId,
-      // });
-
-      // Emit message for conversation
-      //   socket.emit("conversation", {
-      //     conversation: {
-      //       _id: newMsg?.conversationId,
-      //       participants: [newMsg?.sender, newMsg?.receiver],
-      //       lastMessage: newMsg?.text,
-      //       createdAt: newMsg?.createdAt,
-      //       updatedAt: newMsg?.updatedAt,
-      //       lastMessageAt: newMsg?.updatedAt,
-      //       lastSender: currentUserId,
-      //     },
-      //     receiverId,
-      //   });
+        // Emit message to receiver
+        socket.emit("sendMessage", {
+          ...newMsg,
+          receiver: !receiverId?._id ? receiverId : receiverId?._id,
+        });
+      }
     } catch (err) {
       console.error("Message send error", err);
     }

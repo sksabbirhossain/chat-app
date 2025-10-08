@@ -1,4 +1,5 @@
 import { getSearchConversations } from "@/actions/conversation/conversationActions";
+import { socket } from "@/configs/socket";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -29,6 +30,11 @@ const ConversationContainer = () => {
   const userInfo = session?.user;
 
   const router = useRouter();
+
+  // Notify server about online user
+  useEffect(() => {
+    socket.emit("joinOnline", userInfo?._id);
+  }, [userInfo]);
 
   // Fetch conversation for current user
   useEffect(() => {
