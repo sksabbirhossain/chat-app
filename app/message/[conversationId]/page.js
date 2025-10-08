@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
   const [receiver, setReceiver] = useState({});
+  const [isOnline, setIsOnline] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -37,6 +38,31 @@ const ChatPage = () => {
       socket.off("receiveMessage", handleReceiveMessage);
     };
   }, []);
+
+  // ✅ Check if the receiver is online
+  useEffect(() => {
+    if (!receiver?._id) return;
+
+    // ✅ Ask backend if receiver is online
+    socket.emit("checkUserOnline", receiver._id, (isOnlineResponse) => {
+      setIsOnline(isOnlineResponse);
+    });
+
+    const handleUserOnline = (userId) => {
+      if (userId === receiver?._id) setIsOnline(true);
+    };
+    const handleUserOffline = (userId) => {
+      if (userId === receiver?._id) setIsOnline(false);
+    };
+
+    socket.on("userOnline", handleUserOnline);
+    socket.on("userOffline", handleUserOffline);
+
+    return () => {
+      socket.off("userOnline", handleUserOnline);
+      socket.off("userOffline", handleUserOffline);
+    };
+  }, [receiver]);
 
   //get all messages for this conversation
   useEffect(() => {
@@ -96,7 +122,7 @@ const ChatPage = () => {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden rounded-lg bg-white sm:h-[95vh]">
-      {/* Header / showing message receiver informations */}
+      {/* Header / showing message receiver informations  */}
       <div className="flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3 shadow-md">
         <div className="flex items-center gap-3">
           <Image
@@ -106,9 +132,19 @@ const ChatPage = () => {
             width={36}
             height={36}
           />
-          <span className="text-[16px] font-medium text-gray-800 capitalize">
-            {receiver?.name}
-          </span>
+          <div className="space-y-0 leading-tight">
+            <p className="text-[16px] font-medium text-gray-800 capitalize">
+              {receiver?.name}
+            </p>
+            {/* shwoing active status */}
+            <p
+              className={`text-[13px] ${
+                isOnline ? "text-green-600" : "text-gray-500"
+              }`}
+            >
+              {isOnline ? "Active" : "Offline"}
+            </p>
+          </div>
         </div>
         {/* open sidebar conversation list for small devices */}
         <button
