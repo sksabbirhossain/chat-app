@@ -1,3 +1,4 @@
+import { socket } from "@/configs/socket";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -42,8 +43,16 @@ const StartConversationContainer = ({
       );
 
       const data = await res.json();
+
       // Handle success
       if (data?.conversation) {
+        // Emit message to receiver
+        socket.emit("sendMessage", {
+          ...data?.message,
+          receiver: data?.message?.receiver,
+          conversation: data?.conversation,
+        });
+
         setQuery("");
         setMessage("");
         setStartConversation(false);

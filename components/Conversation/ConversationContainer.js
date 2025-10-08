@@ -36,6 +36,37 @@ const ConversationContainer = () => {
     socket.emit("joinOnline", userInfo?._id);
   }, [userInfo]);
 
+  // Listen for conversation updates
+  useEffect(() => {
+    socket.on("updateConversation", (data) => {
+      // Update the conversation list
+      setConversations((prev) => {
+        const updated = prev.map((conv) => {
+          if (conv?._id === data?.conversationId) {
+            return {
+              ...conv,
+              lastMessage: data.text || "📎 File",
+              updatedAt: new Date(),
+            };
+          }
+          return conv;
+        });
+
+        // Move updated conversation to top
+        return updated.sort(
+          (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt),
+        );
+      });
+
+      // If the conversation is not in the list, add it
+      if (!conversations.find((c) => c._id === data?.conversationId)) {
+        setConversations((prev) => [data?.conversation, ...prev]);
+      }
+    });
+
+    return () => socket.off("updateConversation");
+  }, [conversations]);
+
   // Fetch conversation for current user
   useEffect(() => {
     const getConversations = async () => {
@@ -167,7 +198,6 @@ const ConversationContainer = () => {
             <ul className="h-full max-h-[350px] w-full space-y-1 overflow-y-auto border-b border-gray-300 bg-gray-100 px-1 shadow-md">
               {searchConversations?.map((conversation) => (
                 <SearchItem
-                  // conversation={conversation}
                   key={conversation?._id}
                   conversation={conversation}
                   setSearchConversations={setSearchConversations}
@@ -198,7 +228,7 @@ const ConversationContainer = () => {
           {/* show all conversations */}
           {conversations?.map((conversation) => (
             <ConversationItem
-              key={conversation._id}
+              key={conversation?._id}
               conversation={conversation}
               currentUserId={userInfo?._id}
             />
