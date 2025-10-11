@@ -1,4 +1,5 @@
 "use client";
+import DropdownMenu from "@/components/Message/DropdownMenu";
 import SendMessage from "@/components/Message/SendMessage";
 import { socket } from "@/configs/socket";
 import useSidebarMenu from "@/contexts/sidebarContext";
@@ -6,7 +7,7 @@ import { format, isToday } from "date-fns";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
@@ -14,6 +15,29 @@ const ChatPage = () => {
   const [isOnline, setIsOnline] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+  const buttonRef = useRef(null);
+
+  // control dropdown menu
+  useEffect(() => {
+    function handleClickOutside(event) {
+      // if click is outside both dropdown and button, close menu
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        !buttonRef.current.contains(event.target)
+      ) {
+        setMenuOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // get conversation id from url
   const params = useParams();
@@ -147,25 +171,90 @@ const ChatPage = () => {
           </div>
         </div>
         {/* open sidebar conversation list for small devices */}
-        <button
-          className="flex cursor-pointer items-center justify-end rounded-lg p-2 text-sm text-gray-500 ring-2 hover:bg-gray-100 focus:ring-2 focus:ring-gray-200 focus:outline-none sm:hidden"
-          onClick={handleOpenSidebar}
-        >
-          <span className="sr-only">Open sidebar</span>
-          <svg
-            className="h-6 w-6"
-            aria-hidden="true"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-x-1 sm:gap-x-3">
+            <p className="rotat rounded-full p-1.5 hover:cursor-pointer hover:bg-gray-100">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 0 1-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25Z"
+                />
+              </svg>
+            </p>
+            <p className="rounded-full p-1.5 hover:cursor-pointer hover:bg-gray-100">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z"
+                />
+              </svg>
+            </p>
+            <div className="relative">
+              <p
+                className="cursor-pointer"
+                ref={buttonRef}
+                onClick={() => setMenuOpen((prev) => !prev)}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"
+                  />
+                </svg>
+              </p>
+
+              {/* Dropdown menu  */}
+              {menuOpen && (
+                <div ref={menuRef}>
+                  <DropdownMenu />
+                </div>
+              )}
+            </div>
+          </div>
+          <button
+            className="flex cursor-pointer items-center justify-end rounded-lg p-2 text-sm text-gray-500 ring-1 hover:bg-gray-100 focus:ring-2 focus:ring-green-500 focus:outline-none sm:hidden"
+            onClick={handleOpenSidebar}
           >
-            <path
-              clipRule="evenodd"
-              fillRule="evenodd"
-              d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
-            ></path>
-          </svg>
-        </button>
+            <span className="sr-only">Open sidebar</span>
+            <svg
+              className="size-5"
+              aria-hidden="true"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                clipRule="evenodd"
+                fillRule="evenodd"
+                d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"
+              ></path>
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* Messages Area */}
