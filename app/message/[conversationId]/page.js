@@ -173,7 +173,7 @@ const ChatPage = () => {
         {/* open sidebar conversation list for small devices */}
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-x-1 sm:gap-x-3">
-            <p className="rotat rounded-full p-1.5 hover:cursor-pointer hover:bg-gray-100">
+            <p className="rotat rounded-full p-1.5 text-gray-600 hover:cursor-pointer hover:bg-green-100 hover:text-gray-500">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -189,7 +189,7 @@ const ChatPage = () => {
                 />
               </svg>
             </p>
-            <p className="rounded-full p-1.5 hover:cursor-pointer hover:bg-gray-100">
+            <p className="rounded-full p-1.5 text-gray-600 hover:cursor-pointer hover:bg-green-100 hover:text-gray-500">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -207,7 +207,7 @@ const ChatPage = () => {
             </p>
             <div className="relative">
               <p
-                className="cursor-pointer"
+                className="cursor-pointer text-gray-600"
                 ref={buttonRef}
                 onClick={() => setMenuOpen((prev) => !prev)}
               >

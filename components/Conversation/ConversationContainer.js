@@ -1,11 +1,11 @@
 import { getSearchConversations } from "@/actions/conversation/conversationActions";
 import { socket } from "@/configs/socket";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ConversationItem from "./ConversationItem";
+import DropdownMenu from "./DropdownMenu";
 import SearchItem from "./SearchItem";
 
 // Utility debounce function
@@ -24,12 +24,35 @@ const ConversationContainer = () => {
   const [errors, setErrors] = useState({});
   const [searchErrors, setSearchErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+  const buttonRef = useRef(null);
 
   // get login user session
   const { data: session } = useSession();
   const userInfo = session?.user;
 
   const router = useRouter();
+
+  // control dropdown menu
+  useEffect(() => {
+    function handleClickOutside(event) {
+      // if click is outside both dropdown and button, close menu
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target) &&
+        !buttonRef.current.contains(event.target)
+      ) {
+        setMenuOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // Notify server about online user
   useEffect(() => {
@@ -154,13 +177,6 @@ const ConversationContainer = () => {
     getConversationHandler(query);
   }, [query, getConversationHandler]);
 
-  //logout user
-  const logout = async () => {
-    const data = await signOut();
-    toast.success("Logout successful");
-    router.push("/");
-  };
-
   return (
     <div className="sidebar h-full w-full overflow-y-auto">
       {/* Search conversations */}
@@ -236,20 +252,50 @@ const ConversationContainer = () => {
         </ul>
       </div>
 
-      {/* logout user */}
-      <div
-        className="shadow-3xl fixed bottom-0 flex h-[65px] w-full cursor-pointer items-center border-t border-gray-300 bg-[#ffffff] px-4"
-        onClick={logout}
-      >
+      {/* login user info */}
+      <div className="shadow-3xl fixed bottom-0 flex h-[55px] w-full cursor-pointer items-center justify-between border-t border-gray-300 bg-[#ffffff] px-4">
+        {/* user info */}
         <div className="flex items-center gap-2">
           <Image
             src={"/default.jpg"}
             alt={"profile"}
-            className="h-10 w-10 rounded-full object-cover p-0.5 ring-1 ring-purple-600"
+            className="line-clamp-1 h-8 w-8 rounded-full object-cover p-0.5 ring-1 ring-green-600"
             width={100}
             height={100}
           />
-          <h2 className="text-md font-semibold capitalize">{userInfo?.name}</h2>
+          <h2 className="text-[16px] font-medium capitalize">
+            {userInfo?.name}
+          </h2>
+        </div>
+        {/* more info */}
+        <div className="relative">
+          <p
+            className="cursor-pointer"
+            ref={buttonRef}
+            onClick={() => setMenuOpen((prev) => !prev)}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"
+              />
+            </svg>
+          </p>
+
+          {/* Dropdown menu   */}
+          {menuOpen && (
+            <div ref={menuRef}>
+              <DropdownMenu />
+            </div>
+          )}
         </div>
       </div>
     </div>
