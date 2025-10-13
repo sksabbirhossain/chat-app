@@ -2,7 +2,7 @@ import { getSearchConversations } from "@/actions/conversation/conversationActio
 import { socket } from "@/configs/socket";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import ConversationItem from "./ConversationItem";
 import DropdownMenu from "./DropdownMenu";
@@ -32,7 +32,7 @@ const ConversationContainer = () => {
   const { data: session } = useSession();
   const userInfo = session?.user;
 
-  const router = useRouter();
+  const pathname = usePathname();
 
   // control dropdown menu
   useEffect(() => {
@@ -247,13 +247,16 @@ const ConversationContainer = () => {
               key={conversation?._id}
               conversation={conversation}
               currentUserId={userInfo?._id}
+              isActive={
+                pathname === `/message/${conversation?._id}` ? true : false
+              }
             />
           ))}
         </ul>
       </div>
 
       {/* login user info */}
-      <div className="shadow-3xl fixed bottom-0 flex h-[55px] w-full cursor-pointer items-center justify-between border-t border-gray-300 bg-[#ffffff] px-4">
+      <div className="shadow-3xl fixed bottom-0 flex h-[55px] w-full items-center justify-between border-t border-gray-300 bg-[#ffffff] px-4">
         {/* user info */}
         <div className="flex items-center gap-2">
           <Image

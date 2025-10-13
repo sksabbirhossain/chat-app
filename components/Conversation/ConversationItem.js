@@ -2,7 +2,7 @@ import getTime from "@/utils/getTime";
 import Image from "next/image";
 import Link from "next/link";
 
-const ConversationItem = ({ conversation, currentUserId }) => {
+const ConversationItem = ({ conversation, currentUserId, isActive }) => {
   // Find the conversation partner
   const partner = conversation?.participants?.find(
     (member) => member._id !== currentUserId,
@@ -10,11 +10,13 @@ const ConversationItem = ({ conversation, currentUserId }) => {
   return (
     <li
       key={conversation?._id}
-      className="rounded-sm shadow shadow-green-800/20"
+      className={`rounded-sm text-gray-900 shadow shadow-green-800/20 transition-colors duration-300 hover:bg-green-600/20 ${
+        isActive ? "bg-green-500/30" : "bg-white"
+      }`}
     >
       <Link
         href={`/message/${conversation?._id}`}
-        className="group flex items-center gap-3 rounded-lg px-3 py-3 text-gray-900 transition-colors duration-300 hover:bg-green-600/10"
+        className="group flex items-center gap-3 px-3 py-3"
       >
         {/* Profile picture */}
         <Image

@@ -4,8 +4,9 @@ import useSidebarMenu from "@/contexts/sidebarContext";
 const Message = () => {
   const { handleOpenSidebar } = useSidebarMenu();
   return (
-    <div className="h-[95vh] w-full overflow-hidden rounded-lg bg-white">
-      <div className="flex h-[55px] items-center justify-end pe-5 shadow">
+    <div className="h-screen w-full overflow-hidden rounded-lg bg-white sm:h-[99vh]">
+      <div className="flex h-[55px] items-center justify-end shadow">
+        {/* open sidebar button */}
         <button
           className="flex items-center justify-end rounded-lg p-2 text-sm text-gray-500 hover:bg-gray-100 focus:ring-2 focus:ring-gray-200 focus:outline-none sm:hidden"
           onClick={handleOpenSidebar}
@@ -26,6 +27,7 @@ const Message = () => {
           </svg>
         </button>
       </div>
+      {/* message placeholder */}
       <div className="flex h-full flex-col items-center justify-center">
         <div className="flex flex-col items-center gap-1">
           <p>
