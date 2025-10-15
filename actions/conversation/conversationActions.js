@@ -29,3 +29,19 @@ export const getSearchConversations = async (search) => {
     throw new Error(e.message);
   }
 };
+
+// delete conversation by id
+export const deleteConversationById = async (conversationId) => {
+  try {
+    const res = await Fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/conversations/${conversationId}`,
+      {
+        method: "DELETE",
+      },
+    );
+    const data = await res.json();
+    return data;
+  } catch (e) {
+    throw new Error(e.message);
+  }
+};

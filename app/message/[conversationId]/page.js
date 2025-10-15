@@ -230,7 +230,7 @@ const ChatPage = () => {
               {/* Dropdown menu  */}
               {menuOpen && (
                 <div ref={menuRef}>
-                  <DropdownMenu />
+                  <DropdownMenu conversationId={conversationId} />
                 </div>
               )}
             </div>
