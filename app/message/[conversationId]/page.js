@@ -170,9 +170,10 @@ const ChatPage = () => {
             </p>
           </div>
         </div>
-        {/* open sidebar conversation list for small devices */}
+        {/* open sidebar  and audo, video, more info icons */}
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-x-1 sm:gap-x-3">
+            {/* audio call icon */}
             <p className="rotat rounded-full p-1.5 text-gray-600 hover:cursor-pointer hover:bg-green-100 hover:text-gray-500">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -189,6 +190,7 @@ const ChatPage = () => {
                 />
               </svg>
             </p>
+            {/* video call icon */}
             <p className="rounded-full p-1.5 text-gray-600 hover:cursor-pointer hover:bg-green-100 hover:text-gray-500">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -205,6 +207,7 @@ const ChatPage = () => {
                 />
               </svg>
             </p>
+            {/* more info icon and dropdown menu */}
             <div className="relative">
               <p
                 className="cursor-pointer text-gray-600"
@@ -235,6 +238,7 @@ const ChatPage = () => {
               )}
             </div>
           </div>
+          {/* open sidebar button */}
           <button
             className="flex cursor-pointer items-center justify-end rounded-lg p-2 text-sm text-gray-500 ring-1 hover:bg-gray-100 focus:ring-2 focus:ring-green-500 focus:outline-none sm:hidden"
             onClick={handleOpenSidebar}
@@ -264,7 +268,30 @@ const ChatPage = () => {
       >
         <>
           {/* showing loading */}
-          {loading && <p className="text-center">Loading...</p>}
+          {loading && (
+            <span className="flex items-center justify-center text-green-500">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="size-6 animate-spin"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M12 6l0 -3" />
+                <path d="M16.25 7.75l2.15 -2.15" />
+                <path d="M18 12l3 0" />
+                <path d="M16.25 16.25l2.15 2.15" />
+                <path d="M12 18l0 3" />
+                <path d="M7.75 16.25l-2.15 2.15" />
+                <path d="M6 12l-3 0" />
+                <path d="M7.75 7.75l-2.15 -2.15" />
+              </svg>
+            </span>
+          )}
 
           {/* showing error */}
           {errors?.errors?.common && (
@@ -274,7 +301,7 @@ const ChatPage = () => {
           )}
 
           {/* if message not found */}
-          {loading && messages?.length === 0 && (
+          {!loading && messages?.length === 0 && (
             <p className="text-center">no messages found!</p>
           )}
         </>

@@ -70,17 +70,18 @@ const StartConversationContainer = ({
 
   return (
     <form onSubmit={handleSendMessage}>
-      <div className="flex w-full items-center gap-1 pb-1">
+      <div className="mb-1 flex w-full items-center gap-1 rounded-md py-2 ring-1 ring-gray-300 focus:ring-green-600 focus:outline-none">
         <input
           type="text"
           placeholder="Type your message..."
-          className="w-full rounded-md border-gray-300 px-3 py-2 ring-1 focus:border-green-500 focus:ring-1 focus:ring-green-500 focus:outline-none"
+          className="w-full border-0 py-1 ps-3 pe-1 text-gray-900 placeholder-gray-500 ring-0 outline-0 sm:text-sm"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
         <button
-          disabled={loading}
-          className="cursor-pointer rounded-md bg-green-600 px-2 py-2 text-white ring-1 hover:bg-green-700"
+          disabled={loading || message.trim() === "" ? true : false}
+          className="cursor-pointer rounded-full pe-1 text-green-600 transition-colors duration-200 ease-in-out hover:text-green-700 disabled:cursor-not-allowed disabled:text-gray-400"
+          type="submit"
         >
           <span>
             <svg

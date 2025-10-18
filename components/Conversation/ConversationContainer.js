@@ -24,6 +24,7 @@ const ConversationContainer = () => {
   const [errors, setErrors] = useState({});
   const [searchErrors, setSearchErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
@@ -139,8 +140,10 @@ const ConversationContainer = () => {
 
   //get search conversatons handler
   const fetchConversations = async (search) => {
+    setSearchLoading(true);
     setSearchErrors({});
     if (!search.trim()) {
+      setSearchLoading(false);
       setSearchConversations([]); // clear if input empty
       return;
     }
@@ -150,10 +153,14 @@ const ConversationContainer = () => {
 
       if (data?.data) {
         setSearchConversations(data?.data);
+        setSearchLoading(false);
+        setSearchErrors({});
       } else {
+        setSearchLoading(false);
         setSearchErrors(data);
       }
     } catch (err) {
+      setSearchLoading(false);
       setSearchErrors({
         errors: {
           common: {
@@ -211,6 +218,38 @@ const ConversationContainer = () => {
         {/* showing search items */}
         {searchConversations && (
           <div className="h-full w-full">
+            {/* showing loading */}
+            {searchLoading && (
+              <span className="flex items-center justify-center py-2 text-green-500">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="size-6 animate-spin"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M12 6l0 -3" />
+                  <path d="M16.25 7.75l2.15 -2.15" />
+                  <path d="M18 12l3 0" />
+                  <path d="M16.25 16.25l2.15 2.15" />
+                  <path d="M12 18l0 3" />
+                  <path d="M7.75 16.25l-2.15 2.15" />
+                  <path d="M6 12l-3 0" />
+                  <path d="M7.75 7.75l-2.15 -2.15" />
+                </svg>
+              </span>
+            )}
+            {/* showing error */}
+            {searchErrors?.errors?.common && (
+              <p className="p-4 text-center text-sm font-semibold text-red-600">
+                {searchErrors.errors.common.msg}
+              </p>
+            )}
+            {/* show search results */}
             <ul className="h-full max-h-[350px] w-full space-y-1 overflow-y-auto border-b border-gray-300 bg-gray-100 px-1 shadow-md">
               {searchConversations?.map((conversation) => (
                 <SearchItem
@@ -230,9 +269,28 @@ const ConversationContainer = () => {
         <ul className="space-y-2 px-0.5 font-medium">
           {/* showing loading */}
           {loading && (
-            <p className="p-4 text-center text-lg font-semibold text-green-600">
-              Loading...
-            </p>
+            <span className="flex items-center justify-center p-0.5 text-green-500">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="size-6 animate-spin"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M12 6l0 -3" />
+                <path d="M16.25 7.75l2.15 -2.15" />
+                <path d="M18 12l3 0" />
+                <path d="M16.25 16.25l2.15 2.15" />
+                <path d="M12 18l0 3" />
+                <path d="M7.75 16.25l-2.15 2.15" />
+                <path d="M6 12l-3 0" />
+                <path d="M7.75 7.75l-2.15 -2.15" />
+              </svg>
+            </span>
           )}
           {/* showing error */}
           {errors?.errors?.common && (

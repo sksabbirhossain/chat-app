@@ -37,7 +37,9 @@ const DropdownMenu = ({ conversationId }) => {
           Block User
         </p>
         <p
-          className="block w-full cursor-pointer rounded-md px-3 py-2 text-left text-sm text-gray-700 hover:bg-green-50"
+          className={`block w-full cursor-pointer rounded-md px-3 py-2 text-left text-sm text-gray-700 hover:bg-green-50 ${
+            loading ? "cursor-wait opacity-50" : ""
+          }`}
           onClick={handleDeleteConversation}
         >
           Delete Conversation

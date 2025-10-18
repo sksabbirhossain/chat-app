@@ -12,6 +12,7 @@ const SendMessage = ({
 }) => {
   const [text, setText] = useState("");
   const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   // auth session
   const { data: session } = useSession();
@@ -19,6 +20,8 @@ const SendMessage = ({
   // send message handler
   const handleSendMessage = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    if (text === "" && files.length === 0) return;
 
     // const formData = new FormData();
     // formData.append("conversationId", conversationId);
@@ -63,8 +66,10 @@ const SendMessage = ({
           ...newMsg,
           receiver: !receiverId?._id ? receiverId : receiverId?._id,
         });
+        setLoading(false);
       }
     } catch (err) {
+      setLoading(false);
       console.error("Message send error", err);
     }
   };
@@ -171,7 +176,7 @@ const SendMessage = ({
 
           {/* Send button */}
           <button
-            disabled={text === "" && files?.length === 0}
+            disabled={loading || (text === "" && files?.length === 0)}
             type="submit"
             className="ml-2 cursor-pointer rounded-full bg-green-600 p-2 text-white transition duration-200 hover:bg-green-700 disabled:cursor-not-allowed disabled:bg-green-700/60"
           >
