@@ -6,7 +6,7 @@ import useSidebarMenu from "@/contexts/sidebarContext";
 import { format, isToday } from "date-fns";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 const ChatPage = () => {
@@ -16,6 +16,7 @@ const ChatPage = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [menuOpen, setMenuOpen] = useState(false);
+  const [notAuthorized, setNotAuthorized] = useState(false);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
 
@@ -121,6 +122,14 @@ const ChatPage = () => {
           setErrors({});
         } else {
           setLoading(false);
+          if (
+            (data?.status === 404 && !data?.success) ||
+            (data?.status === 403 && !data?.success) ||
+            (data?.status === 500 && !data?.success)
+          ) {
+            setNotAuthorized(true);
+            return;
+          }
           setErrors({
             errors: {
               common: {
@@ -143,6 +152,8 @@ const ChatPage = () => {
 
     if (conversationId) fetchMessages();
   }, [conversationId, session, userInfo]);
+
+  if (notAuthorized && !loading) notFound();
 
   return (
     <div className="flex h-screen flex-col overflow-hidden rounded-lg bg-white sm:h-[99vh]">
