@@ -9,7 +9,7 @@ const SearchItem = ({ conversation, setQuery }) => {
     <>
       <li
         key={conversation?._id}
-        className="rounded-sm shadow shadow-green-800/20"
+        className="rounded-sm border-b border-gray-200 bg-white transition-colors duration-300 hover:bg-green-600/20"
         onClick={() => setStartConversation(!startConversation)}
       >
         <div className="group flex items-center gap-3 rounded-lg px-3 py-3 text-gray-900 transition-colors duration-300 hover:bg-green-600/10">
@@ -28,10 +28,10 @@ const SearchItem = ({ conversation, setQuery }) => {
 
           {/* Name + Last Message */}
           <div className="min-w-0 flex-1">
-            <p className="truncate text-[15px] font-semibold capitalize">
+            <p className="truncate text-[14px] font-medium capitalize">
               {conversation?.name}
             </p>
-            <p className="truncate text-sm text-gray-500">
+            <p className="truncate text-[13px] text-gray-500">
               {conversation?.lastMessage || "No messages yet"}
             </p>
           </div>

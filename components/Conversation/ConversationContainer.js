@@ -195,7 +195,7 @@ const ConversationContainer = () => {
             placeholder="Search a conversation..."
             name={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full py-[18px] pr-4 pl-10 shadow-green-500/20 focus:shadow-sm focus:outline-none"
+            className="w-full py-[18px] pr-4 pl-10 shadow-green-500/20 placeholder:text-[14px] focus:shadow-sm focus:outline-none"
           />
           <svg
             className="absolute top-1/2 left-3 -translate-y-1/2 transform text-gray-400"
@@ -250,7 +250,7 @@ const ConversationContainer = () => {
               </p>
             )}
             {/* show search results */}
-            <ul className="h-full max-h-[350px] w-full space-y-1 overflow-y-auto border-b border-gray-300 bg-gray-100 px-1 shadow-md">
+            <ul className="search-scroll h-full max-h-[350px] w-full space-y-0.5 overflow-y-auto border-b border-gray-300 bg-gray-100 px-1 shadow-md">
               {searchConversations?.map((conversation) => (
                 <SearchItem
                   key={conversation?._id}
@@ -266,7 +266,7 @@ const ConversationContainer = () => {
 
       {/* Conversation List */}
       <div className="pt-[65px]">
-        <ul className="space-y-2 px-0.5 font-medium">
+        <ul className="space-y-0.5 px-0.5 font-medium">
           {/* showing loading */}
           {loading && (
             <span className="flex items-center justify-center p-0.5 text-green-500">
@@ -324,7 +324,7 @@ const ConversationContainer = () => {
             width={100}
             height={100}
           />
-          <h2 className="text-[16px] font-medium capitalize">
+          <h2 className="text-[15px] font-medium capitalize">
             {userInfo?.name}
           </h2>
         </div>

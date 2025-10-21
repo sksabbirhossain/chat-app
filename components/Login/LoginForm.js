@@ -126,7 +126,7 @@ const LoginForm = () => {
       </div>
 
       {/* Remember me and forgot password links */}
-      <div className="flex items-center justify-between text-sm font-medium text-gray-600">
+      <div className="flex items-center justify-between text-sm font-medium text-gray-500">
         {/* Remember me checkbox */}
         <div className="flex items-center space-x-2">
           <input
@@ -149,7 +149,9 @@ const LoginForm = () => {
       </div>
 
       {/* submit button */}
-      <Button isLoading={loading}>Login</Button>
+      <div className="pt-2">
+        <Button isLoading={loading}>Login</Button>
+      </div>
 
       {/* common error message */}
       {errors?.errors?.common && (

@@ -201,7 +201,9 @@ const RegisterForm = () => {
       </div>
 
       {/* submit button */}
-      <Button isLoading={loading}>register</Button>
+      <div className="pt-2">
+        <Button isLoading={loading}>register</Button>
+      </div>
 
       {/* showing common errors message */}
       {errors?.errors?.common && (

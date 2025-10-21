@@ -148,25 +148,21 @@ const ChatPage = () => {
     <div className="flex h-screen flex-col overflow-hidden rounded-lg bg-white sm:h-[99vh]">
       {/* Header / showing message receiver informations  */}
       <div className="flex items-center justify-between border-b border-gray-200 bg-white px-4 py-3 shadow-md">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <Image
             src={receiver?.profilePic ? `` : "/default.jpg"}
             alt={"John Doe"}
-            className="h-9 w-9 rounded-full object-cover ring-2 ring-green-700"
+            className="h-10 w-10 rounded-full object-cover ring-1 ring-green-600"
             width={36}
             height={36}
           />
-          <div className="space-y-0 leading-tight">
-            <p className="text-[16px] font-medium text-gray-800 capitalize">
+          <div className="space-y-0.5 leading-tight">
+            <p className="text-[15px] font-normal text-gray-800 capitalize">
               {receiver?.name}
             </p>
             {/* shwoing active status */}
-            <p
-              className={`text-[13px] ${
-                isOnline ? "text-green-600" : "text-gray-500"
-              }`}
-            >
-              {isOnline ? "Active" : "Offline"}
+            <p className="text-[13px] text-gray-500 capitalize">
+              {isOnline ? "Active Now" : "Offline"}
             </p>
           </div>
         </div>

@@ -1,20 +1,23 @@
 import Providers from "@/utils/Providers";
-import { Geist } from "next/font/google";
+import { Roboto } from "next/font/google";
 import "./globals.css";
 
-const geist = Geist({
+const roboto = Roboto({
   subsets: ["latin"],
 });
 
 export const metadata = {
-  title: "Chat App",
-  description: "A simple chat application built with Next.js",
+  title: {
+    default: "Chat App",
+    template: "%s - Chat App",
+  },
+  description: "A real-time chat app built with Next.js",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${geist.className} bg-gray-200 antialiased`}>
+      <body className={`${roboto.className} bg-gray-200 antialiased`}>
         <Providers>{children}</Providers>
       </body>
     </html>

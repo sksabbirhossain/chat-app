@@ -1,5 +1,3 @@
-import React from "react";
-
 const FormInput = ({
   label,
   type,
@@ -14,7 +12,7 @@ const FormInput = ({
       {label != 0 && (
         <label
           htmlFor=""
-          className="text-base font-medium text-gray-700 capitalize"
+          className="text-base font-medium text-gray-600 capitalize"
         >
           {label}
         </label>
@@ -25,7 +23,7 @@ const FormInput = ({
         value={value}
         name={name}
         {...rest}
-        className={`w-full rounded px-1.5 py-2 ring-1 ring-green-600 focus:ring-2 focus:ring-green-700/80 focus:outline-none ${className}`}
+        className={`w-full rounded bg-green-100/40 px-1.5 py-2 ring-1 ring-green-600 focus:ring-2 focus:ring-green-700/80 focus:outline-none ${className}`}
       />
     </div>
   );

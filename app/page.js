@@ -8,11 +8,11 @@ export const metadata = {
 export default function Login() {
   return (
     <section className="flex h-screen items-center justify-center px-2">
-      <div className="w-full max-w-[350px] rounded bg-white px-4 py-6 shadow-md">
+      <div className="w-full max-w-[350px] rounded-md bg-white px-4 py-7 shadow-md sm:px-5 sm:py-10">
         {/* heading */}
         <div className="mb-6 space-y-1 text-center">
-          <h1 className="text-xl font-bold">Login</h1>
-          <p className="text-base text-gray-600 capitalize">
+          <h1 className="text-xl font-medium text-gray-600 uppercase">Login</h1>
+          <p className="text-[15px] text-gray-500">
             Welcome back! Please login to your account.
           </p>
         </div>
@@ -20,10 +20,10 @@ export default function Login() {
         {/* login form */}
         <LoginForm />
 
-        <p className="mt-4 text-center text-sm font-medium text-gray-600 capitalize">
+        <p className="mt-7 text-center text-sm font-medium text-gray-600">
           Don&apos;t have an account?{" "}
           <Link href="/register" className="text-green-700 hover:underline">
-            register account
+            Register Account
           </Link>
         </p>
       </div>
