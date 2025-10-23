@@ -28,9 +28,10 @@ const ConversationContainer = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
+  const fetchedRef = useRef(false);
 
   // get login user session
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const userInfo = session?.user;
 
   const pathname = usePathname();
@@ -93,6 +94,13 @@ const ConversationContainer = () => {
 
   // Fetch conversation for current user
   useEffect(() => {
+    if (fetchedRef.current) return;
+    if (status !== "authenticated") return;
+    if (!session?.user?._id) return;
+
+    fetchedRef.current = true;
+
+    // get conversations api call
     const getConversations = async () => {
       setLoading(true);
       setErrors({});
@@ -135,8 +143,8 @@ const ConversationContainer = () => {
       }
     };
 
-    if (userInfo?._id) getConversations();
-  }, [userInfo, session]);
+    getConversations();
+  }, [userInfo, session, status]);
 
   //get search conversatons handler
   const fetchConversations = async (search) => {
@@ -257,6 +265,7 @@ const ConversationContainer = () => {
                   conversation={conversation}
                   setSearchConversations={setSearchConversations}
                   setQuery={setQuery}
+                  setConversations={setConversations}
                 />
               ))}
             </ul>

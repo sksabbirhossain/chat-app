@@ -8,6 +8,7 @@ const StartConversationContainer = ({
   receiverId,
   setStartConversation,
   setQuery,
+  setConversations,
 }) => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -52,6 +53,12 @@ const StartConversationContainer = ({
           receiver: data?.message?.receiver,
           conversation: data?.conversation,
         });
+
+        // Update conversations list
+        setConversations((prevConversations) => [
+          data.conversation,
+          ...prevConversations,
+        ]);
 
         setQuery("");
         setMessage("");

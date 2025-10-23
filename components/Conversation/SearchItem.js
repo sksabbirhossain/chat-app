@@ -2,7 +2,7 @@ import Image from "next/image";
 import { useState } from "react";
 import StartConversationContainer from "./StartConversationContainer";
 
-const SearchItem = ({ conversation, setQuery }) => {
+const SearchItem = ({ conversation, setQuery, setConversations }) => {
   const [startConversation, setStartConversation] = useState(false);
 
   return (
@@ -43,6 +43,7 @@ const SearchItem = ({ conversation, setQuery }) => {
           setStartConversation={setStartConversation}
           receiverId={conversation?._id}
           setQuery={setQuery}
+          setConversations={setConversations}
         />
       )}
     </>
