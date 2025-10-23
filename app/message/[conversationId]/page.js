@@ -19,6 +19,7 @@ const ChatPage = () => {
   const [notAuthorized, setNotAuthorized] = useState(false);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
+  const fetchedRef = useRef(false);
 
   // control dropdown menu
   useEffect(() => {
@@ -45,7 +46,7 @@ const ChatPage = () => {
   const { conversationId } = params;
 
   // auth session
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const userInfo = session?.user;
 
   // sidebar menu context
@@ -91,6 +92,11 @@ const ChatPage = () => {
 
   //get all messages for this conversation
   useEffect(() => {
+    if (status !== "authenticated") return;
+    if (!conversationId) return;
+    if (fetchedRef.current) return;
+    fetchedRef.current = true;
+
     const fetchMessages = async () => {
       setLoading(true);
       setErrors({});
@@ -150,8 +156,8 @@ const ChatPage = () => {
       }
     };
 
-    if (conversationId) fetchMessages();
-  }, [conversationId, session, userInfo]);
+    fetchMessages();
+  }, [conversationId, session, userInfo, status]);
 
   if (notAuthorized && !loading) notFound();
 
