@@ -4,9 +4,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
-const StartConversationContainer = ({
+const UserSendMessage = ({
   receiverId,
-  setStartConversation,
+  setSendMessageInputIsOpen,
   setQuery,
   setConversations,
 }) => {
@@ -62,7 +62,7 @@ const StartConversationContainer = ({
 
         setQuery("");
         setMessage("");
-        setStartConversation(false);
+        setSendMessageInputIsOpen(false);
         setLoading(false);
         setError(null);
         // Redirect to the new conversation
@@ -112,4 +112,4 @@ const StartConversationContainer = ({
   );
 };
 
-export default StartConversationContainer;
+export default UserSendMessage;

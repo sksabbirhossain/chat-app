@@ -1,21 +1,15 @@
-"use client";
+import Sidebar from "@/components/Conversation/Sidebar";
 
-import ConversationContainer from "@/components/Conversation/ConversationContainer";
-import useSidebarMenu from "@/contexts/sidebarContext";
+export const metadata = {
+  title: "Messages",
+  description: "ChatApp messaging interface",
+};
 
 const MessageLayout = ({ children }) => {
-  const { openSidebar } = useSidebarMenu();
-
   return (
-    <div className="mx-auto w-full max-w-5xl sm:pt-1">
-      {/* sidebar message list */}
-      <aside
-        className={`fixed h-screen w-64 -translate-x-full overflow-hidden rounded-lg transition-transform sm:h-[99vh] sm:translate-x-0 ${openSidebar ? "translate-x-0" : ""}`}
-      >
-        <div className="h-full bg-white shadow-md">
-          <ConversationContainer />
-        </div>
-      </aside>
+    <div className="relative mx-auto w-full max-w-5xl sm:pt-1">
+      {/* sidebar */}
+      <Sidebar />
 
       {/* message contents */}
       <div className="sm:ml-64 sm:px-2">{children}</div>

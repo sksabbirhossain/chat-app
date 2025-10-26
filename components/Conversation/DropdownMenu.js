@@ -17,7 +17,7 @@ const DropdownMenu = () => {
   };
 
   return (
-    <div className="absolute -top-[118px] -right-3 z-10 w-36 rounded-md bg-white p-2 shadow">
+    <>
       {/* user profile Menu items */}
       <p className="block w-full cursor-pointer rounded-md px-2 py-1 text-left text-sm text-gray-700 hover:bg-green-50">
         View Profile
@@ -33,7 +33,7 @@ const DropdownMenu = () => {
       >
         Logout
       </p>
-    </div>
+    </>
   );
 };
 
